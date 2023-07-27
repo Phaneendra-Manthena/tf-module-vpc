@@ -67,7 +67,6 @@ resource "aws_route_table_association" "public-rt-association" {
 }
 
 resource "aws_eip" "ngw-eip" {
-  vpc = true
 }
 
 resource "aws_nat_gateway" "ngw" {
