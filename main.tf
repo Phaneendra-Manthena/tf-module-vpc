@@ -6,6 +6,15 @@ resource "aws_vpc" "main" {
     )
 }
 
+resource "aws_subnet" "main" {
+  count = length(var.subnets_cidr)
+  vpc_id = aws_vpc.main.id
+  cidr_block = var.subnets_cidr[count.index]
+  tags = merge(
+  local.common_tags,
+{Name = "${var.env}-subnet"}
+)
+}
 
 resource "aws_vpc_peering_connection" "peer" {
   peer_owner_id = "data.aws_caller_identity.current.account_id"
