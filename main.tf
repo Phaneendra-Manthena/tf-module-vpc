@@ -60,7 +60,11 @@ resource "aws_route_table" "public" {
     {Name = "${var.env}-public-route-table"}
   )
 }
-
+resource "aws_route_table_association" "public-rt-association" {
+  count = length(aws_subnet.public)
+  subnet_id = "aws_subnet_public.*.id[count.index]"
+  route_table_id = "aws_route_table.public.id"
+}
 #data "aws_ami" "centos8" {
 #  most_recent = true
 #  name_regex  = "Centos-8-DevOps-Practice"
