@@ -45,6 +45,21 @@ resource "aws_internet_gateway" "igw" {
   )
 }
 
+resource "aws_route_table" "public" {
+  vpc_id = aws_vpc.main.id
+  route {
+    cidr_id = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.igw.id
+  }
+  route {
+    cidr_block = data.aws_vpc.default.cidr_block
+    vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
+  }
+  tags = merge(
+    local.common_tags,
+    {Name = "${var.env}-public-route-table"}
+  )
+}
 
 #data "aws_ami" "centos8" {
 #  most_recent = true
