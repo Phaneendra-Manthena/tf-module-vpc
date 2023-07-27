@@ -65,6 +65,26 @@ resource "aws_route_table_association" "public-rt-association" {
   subnet_id = "aws_subnet_public.*.id[count.index]"
   route_table_id = "aws_route_table.public.id"
 }
+
+resource "aws_eip" "ngw-eip" {
+  vpc = true
+}
+
+resource "aws_nat_gateway" "ngw" {
+  allocation_id = "aws_eip.ngw-eip.id"
+  subnet_id = aws_subnet.public.*.id[0]
+  tags = merge(
+    local.common_tags,
+    {Name = "${var.env}-ngw"}
+  )
+  depends_on = [aws_internet_gateway.igw]
+}
+
+
+
+
+
+
 #data "aws_ami" "centos8" {
 #  most_recent = true
 #  name_regex  = "Centos-8-DevOps-Practice"
