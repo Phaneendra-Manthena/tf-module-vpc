@@ -45,7 +45,11 @@ resource "aws_internet_gateway" "igw" {
     {Name = "${var.env}-igw"}
   )
 }
-
+resource "aws_route" "igw_route" {
+  route_table_id = aws_vpc.main.default_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.igw.id
+}
 
 
 data "aws_ami" "centos8" {
