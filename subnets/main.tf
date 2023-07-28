@@ -27,7 +27,6 @@ resource "aws_route_table" "route_table" {
 
 }
 
-}
 
 
 resource "aws_route_table_association" "assocaiation" {
