@@ -30,7 +30,7 @@ resource "aws_eip" "ngw-eip" {
 }
 
 resource "aws_nat_gateway" "ngw" {
-  allocation_id = "aws_eip.ngw-eip.id"
+  allocation_id = aws_eip.ngw-eip.id
   subnet_id     = lookup(lookup(module.public_subnets,"public",null ),"subnet_ids",null)[0]
   tags = merge(
     local.common_tags,
@@ -39,27 +39,6 @@ resource "aws_nat_gateway" "ngw" {
   depends_on = [aws_internet_gateway.gw]
 }
 
-#resource "aws_route_table" "private" {
-#  vpc_id = aws_vpc.main.id
-#  route {
-#    cidr_block     = "0.0.0.0/0"
-#    nat_gateway_id = aws_nat_gateway.ngw.id
-#  }
-#  route {
-#    cidr_block                = data.aws_vpc.default.cidr_block
-#    vpc_peering_connection_id = aws_vpc_peering_connection.peer.id
-#  }
-#  tags = merge(
-#    local.common_tags,
-#    { Name = "${var.env}-public-route-table" }
-#  )
-#}
-
-#resource "aws_route_table_association" "private-rt-association" {
-#  count          = length(aws_subnet.private)
-#  subnet_id      = "aws_subnet_private.*.id[count.index]"
-#  route_table_id = "aws_route_table.private.id"
-#}
 
 resource "aws_route" "default" {
   route_table_id            = data.aws_vpc.default.main_route_table_id
